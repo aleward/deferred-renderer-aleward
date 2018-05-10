@@ -23,6 +23,7 @@ Demo Link: [here](https://aleward.github.io/deferred-renderer-aleward/)
 ![](mid-depth.gif)
 
 * __Motion blur:__
+
 There is a very small blur based on changing camera properties:
 ![](GOOD-camera-motion.gif)
 
