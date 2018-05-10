@@ -8,7 +8,7 @@ export function readTextFile(file: string): string
 {
     var text = "";
     var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
+    rawFile.open("GET", file);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
