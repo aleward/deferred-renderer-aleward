@@ -60,6 +60,7 @@ function loadScene() {
 
   mesh0 = new Mesh(obj0, vec3.fromValues(0, 0, 0));
   mesh0.create();
+  console.log(mesh0.positions.length);
 
   tex0 = new Texture('./src/resources/textures/wahoo.bmp')
 }

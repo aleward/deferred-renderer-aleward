@@ -155,7 +155,7 @@ function setGL(_gl) {
 function readTextFile(file) {
     var text = "";
     var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file);
+    rawFile.open("GET", file, false, null, null);
     rawFile.onreadystatechange = function () {
         if (rawFile.readyState === 4) {
             if (rawFile.status === 200 || rawFile.status == 0) {
@@ -3740,6 +3740,7 @@ function loadScene() {
     square.create();
     mesh0 = new __WEBPACK_IMPORTED_MODULE_4__geometry_Mesh__["a" /* default */](obj0, __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec3 */].fromValues(0, 0, 0));
     mesh0.create();
+    console.log(mesh0.positions.length);
     tex0 = new __WEBPACK_IMPORTED_MODULE_9__rendering_gl_Texture__["a" /* default */]('./src/resources/textures/wahoo.bmp');
 }
 function main() {
