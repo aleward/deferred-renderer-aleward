@@ -14,7 +14,7 @@ out vec4 fragColor[3]; // The data in the ith index of this array of outputs
                        // separate images from a single render pass.
 
 uniform sampler2D tex_Color;
-
+uniform vec3 u_Velocity;
 
 void main() {
     // TODO: pass proper data into gbuffers
@@ -26,7 +26,7 @@ void main() {
     // if using textures, inverse gamma correct
     col = pow(col, vec3(2.2));
 
-    fragColor[0] = vec4(0.0);
-    fragColor[1] = vec4(0.0);
+    fragColor[0] = vec4(fs_Nor.xyz, fs_Pos.z);
+    fragColor[1] = vec4(u_Velocity, fs_Pos.z);
     fragColor[2] = vec4(col, 1.0);
 }

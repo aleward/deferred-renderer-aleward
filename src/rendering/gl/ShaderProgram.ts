@@ -1,4 +1,4 @@
-import {vec4, mat4} from 'gl-matrix';
+import {vec2, vec3, vec4, mat4} from 'gl-matrix';
 import Drawable from './Drawable';
 import Texture from './Texture';
 import {gl} from '../../globals';
@@ -34,6 +34,10 @@ class ShaderProgram {
   unifProj: WebGLUniformLocation;
   unifColor: WebGLUniformLocation;
   unifTime: WebGLUniformLocation;
+  unifDim: WebGLUniformLocation;
+  unifDepth: WebGLUniformLocation;
+  unifBloom: WebGLUniformLocation;
+  unifVelocity: WebGLUniformLocation;
 
   unifTexUnits: Map<string, WebGLUniformLocation>;
 
@@ -58,7 +62,11 @@ class ShaderProgram {
     this.unifView = gl.getUniformLocation(this.prog, "u_View");
     this.unifProj = gl.getUniformLocation(this.prog, "u_Proj");
     this.unifColor = gl.getUniformLocation(this.prog, "u_Color");
-    this.unifTime = gl.getUniformLocation(this.prog, "u_Time")
+    this.unifTime = gl.getUniformLocation(this.prog, "u_Time");
+    this.unifDim = gl.getUniformLocation(this.prog, "u_Dimensions");
+    this.unifDepth = gl.getUniformLocation(this.prog, "u_Depth");
+    this.unifBloom = gl.getUniformLocation(this.prog, "u_Bloom");
+    this.unifVelocity = gl.getUniformLocation(this.prog, "u_Velocity");
 
     this.unifTexUnits = new Map<string, WebGLUniformLocation>();
   }
@@ -140,6 +148,34 @@ class ShaderProgram {
     this.use();
     if (this.unifTime !== -1) {
       gl.uniform1f(this.unifTime, t);
+    }
+  }
+
+  setDimensions(d: vec2) {
+    this.use();
+    if (this.unifDim !== -1) {
+      gl.uniform2fv(this.unifDim, d);
+    }
+  }
+
+  setDepth(d: number) {
+    this.use();
+    if (this.unifDepth !== -1) {
+      gl.uniform1f(this.unifDepth, d);
+    }
+  }
+
+  setBloom(d: number) {
+    this.use();
+    if (this.unifBloom !== -1) {
+      gl.uniform1f(this.unifBloom, d);
+    }
+  }
+
+  setVelocity(v: vec3) {
+    this.use();
+    if (this.unifVelocity !== -1) {
+      gl.uniform3fv(this.unifVelocity, v);
     }
   }
 

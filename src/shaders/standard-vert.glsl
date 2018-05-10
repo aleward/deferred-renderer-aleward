@@ -6,6 +6,8 @@ uniform mat4 u_ModelInvTr;
 
 uniform mat4 u_View;   
 uniform mat4 u_Proj; 
+uniform vec3 u_Velocity;
+uniform float u_Time;
 
 in vec4 vs_Pos;
 in vec4 vs_Nor;
@@ -23,11 +25,15 @@ void main()
     fs_UV = vs_UV;
     fs_UV.y = 1.0 - fs_UV.y;
 
+    vec4 pos = vs_Pos + vec4(u_Velocity, 0.f) * sin(u_Time * 2.5f);
+
     // fragment info is in view space
     mat3 invTranspose = mat3(u_ModelInvTr);
     mat3 view = mat3(u_View);
     fs_Nor = vec4(view * invTranspose * vec3(vs_Nor), 0);
-    fs_Pos = u_View * u_Model * vs_Pos;
+    fs_Pos = u_View * u_Model * pos;
+
+    //fs_Pos.w = (u_Proj * u_View * u_Model * vs_Pos).w;
     
-    gl_Position = u_Proj * u_View * u_Model * vs_Pos;
+    gl_Position = u_Proj * u_View * u_Model * pos;
 }

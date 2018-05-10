@@ -1,4 +1,4 @@
-import {mat4, vec4, vec3} from 'gl-matrix';
+import {mat4, vec4, vec2} from 'gl-matrix';
 import Drawable from './Drawable';
 import Camera from '../../Camera';
 import {gl} from '../../globals';
@@ -48,9 +48,17 @@ class OpenGLRenderer {
     this.post8Passes.push(pass);
   }
 
+  remove8BitPasses() {
+    this.post8Passes = [];//.pop();
+  }
+
 
   add32BitPass(pass: PostProcess) {
     this.post32Passes.push(pass);
+  }
+
+  remove32BitPasses() {
+    this.post32Passes = [];//.pop();
   }
 
 
@@ -66,10 +74,10 @@ class OpenGLRenderer {
     this.post32Passes = [];
 
     // TODO: these are placeholder post shaders, replace them with something good
-    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost-frag.glsl'))));
-    this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost2-frag.glsl'))));
+    // this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost-frag.glsl'))));
+    // this.add8BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost2-frag.glsl'))));
 
-    this.add32BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost3-frag.glsl'))));
+    // this.add32BitPass(new PostProcess(new Shader(gl.FRAGMENT_SHADER, require('../../shaders/examplePost3-frag.glsl'))));
 
     if (!gl.getExtension("OES_texture_float_linear")) {
       console.error("OES_texture_float_linear not available");
@@ -195,6 +203,24 @@ class OpenGLRenderer {
     this.currentTime = currentTime;
   }
 
+  updateDimensions(dims: vec2) {
+    for (let pass of this.post8Passes) pass.setDimensions(dims);
+    for (let pass of this.post32Passes) pass.setDimensions(dims);
+  }
+
+  updateMatrices(vw: mat4, p: mat4, vwPrj: mat4) {
+    for (let pass of this.post8Passes) {
+      pass.setViewMatrix(vw);
+      pass.setProjMatrix(p);
+      pass.setViewProjMatrix(vwPrj);
+    }
+    for (let pass of this.post32Passes) { 
+      pass.setViewMatrix(vw);
+      pass.setProjMatrix(p);
+      pass.setViewProjMatrix(vwPrj);
+    }
+  }
+
 
   clear() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -208,7 +234,7 @@ class OpenGLRenderer {
   }
 
 
-  renderToGBuffer(camera: Camera, gbProg: ShaderProgram, drawables: Array<Drawable>) {
+  renderToGBuffer(camera: Camera, gbProg: ShaderProgram, drawables: Array<Drawable>, vP: mat4) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.gBuffer);
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     gl.enable(gl.DEPTH_TEST);
@@ -226,6 +252,7 @@ class OpenGLRenderer {
     gbProg.setGeometryColor(color);
     gbProg.setViewMatrix(view);
     gbProg.setProjMatrix(proj);
+    this.updateMatrices(view, proj, vP);
 
     gbProg.setTime(this.currentTime);
 
@@ -335,6 +362,11 @@ class OpenGLRenderer {
       gl.bindTexture(gl.TEXTURE_2D, this.post8Targets[(i) % 2]);
 
       this.post8Passes[i].draw();
+
+      gl.activeTexture(gl.TEXTURE3);
+      gl.bindTexture(gl.TEXTURE_2D, this.gbTargets[0]);
+      gl.activeTexture(gl.TEXTURE4);
+      gl.bindTexture(gl.TEXTURE_2D, this.gbTargets[1]);
 
       // bind default
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
