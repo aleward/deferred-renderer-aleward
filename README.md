@@ -8,7 +8,7 @@ Demo Link: [here](https://aleward.github.io/deferred-renderer-aleward/)
 
 **Goal:** Learn an advanced rendering technique using the OpenGL pipeline and apply it to make artistic procedural post-processing effects.
 
-## Post passing data to G-Buffers, basic scene shading, and HDR Tone Mapping
+## After passing data to G-Buffers, basic scene shading, and HDR Tone Mapping:
 ![](base.gif)
 
 ## Post-process effects (75 points)
@@ -23,7 +23,6 @@ Demo Link: [here](https://aleward.github.io/deferred-renderer-aleward/)
 ![](mid-depth.gif)
 
 * __Motion blur:__
-
 There is a very small blur based on changing camera properties:
 ![](GOOD-camera-motion.gif)
 
